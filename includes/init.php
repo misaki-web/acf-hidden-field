@@ -21,16 +21,26 @@ add_action('init', function () {
 
 add_action('acf/init', function () {
 	add_filter('acf/prepare_field/type=hidden', function ($field) {
-		$field['wrapper']['style'] = 'display: none;';
-		
+		$show_as_text_in_admin = !empty($field['show_as_text_in_admin']);
+
+		if (!is_admin() || !$show_as_text_in_admin) {
+			$field['wrapper']['style'] = 'display: none;';
+		}
+
 		return $field;
 	});
 });
 
 add_action('acf/init', function () {
 	add_filter('acf/prepare_field/type=hidden', function ($field) {
-		$field['label'] = '';
-		$field['instructions'] = '';
+		$show_as_text_in_admin = !empty($field['show_as_text_in_admin']);
+
+		if (is_admin() && $show_as_text_in_admin) {
+			$field['label'] .= ' (<code>type="hidden"</code>)';
+		} else {
+			$field['label'] = '';
+			$field['instructions'] = '';
+		}
 
 		return $field;
 	});
